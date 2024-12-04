@@ -18,7 +18,6 @@ var word = new [] { 'M', 'A', 'S' };
 bool IsInvalidRow(int indexR) => indexR >= numR || indexR < 0;
 bool IsInvalidCol(int indexC) => indexC >= numC || indexC < 0;
 
-
 int FindInDirection(int r, int c, int dirR, int dirC)
 {
     for(int i = 0; i < word.Length; i++)
@@ -62,7 +61,6 @@ int Find(int r, int c)
 
 bool FindXChar(int r, int c, int dirR, int dirC, char toFind)
 {
-    // M
     var indexR = r + dirR;
     if (IsInvalidRow(indexR))
     {
