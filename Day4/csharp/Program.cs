@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-var filename = "../short_input";
-// var filename = "../input";
+// var filename = "../short_input";
+var filename = "../input";
 
 var matrix = File.ReadAllLines(filename);
 var numC = matrix[0].Length;
