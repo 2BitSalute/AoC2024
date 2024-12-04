@@ -15,82 +15,6 @@ var numR = matrix.Length;
 // Skip X
 var word = new[] { 'M', 'A', 'S' };
 
-int FindHorizontalBackwards(int r, int c)
-{
-    for(int i = 0; i < word.Length; i++)
-    {
-        var index = c - i - 1;
-        if (index < 0)
-        {
-            return 0;
-        }
-
-        if (matrix[r][index] != word[i])
-        {
-            return 0;
-        }
-    }
-
-    return 1;
-}
-
-int FindHorizontal(int r, int c)
-{
-    for(int i = 0; i < word.Length; i++)
-    {
-        var index = c + i + 1;
-        if (index >= numC)
-        {
-            return 0;
-        }
-
-        if (matrix[r][index] != word[i])
-        {
-            return 0;
-        }
-    }
-
-    return 1;
-}
-
-int FindVerticalBackwards(int r, int c)
-{
-    for(int i = 0; i < word.Length; i++)
-    {
-        var index = r - i - 1;
-        if (index < 0)
-        {
-            return 0;
-        }
-
-        if (matrix[index][c] != word[i])
-        {
-            return 0;
-        }
-    }
-
-    return 1;
-}
-
-int FindVertical(int r, int c)
-{
-    for(int i = 0; i < word.Length; i++)
-    {
-        var index = r + i + 1;
-        if (index >= numR)
-        {
-            return 0;
-        }
-
-        if (matrix[index][c] != word[i])
-        {
-            return 0;
-        }
-    }
-
-    return 1;
-}
-
 int FindInDirection(int r, int c, int dirR, int dirC)
 {
     for(int i = 0; i < word.Length; i++)
@@ -139,29 +63,6 @@ for (int r = 0; r < numR; r++)
     {
         if (matrix[r][c] == 'X')
         {
-            // result +=
-            //     FindHorizontal(r, c) +
-            //     FindHorizontalBackwards(r, c) +
-            //     FindVertical(r, c) +
-            //     FindVerticalBackwards(r, c);
-
-            if (FindInDirection(r, c, 0, 1) != FindHorizontal(r, c))
-            {
-                Console.WriteLine($"FindInDirection wrong at {r}, {c}");
-            }
-            if (FindInDirection(r, c, 0, -1) != FindHorizontalBackwards(r, c))
-            {
-                Console.WriteLine($"FindInDirection wrong at {r}, {c}");
-            }
-            if (FindInDirection(r, c, 1, 0) != FindVertical(r, c))
-            {
-                Console.WriteLine($"FindInDirection wrong at {r}, {c}");
-            }
-            if (FindInDirection(r, c, -1, 0) != FindVerticalBackwards(r, c))
-            {
-                Console.WriteLine($"FindInDirection wrong at {r}, {c}");
-            }
-
             result += Find(r, c);
         }
     }
