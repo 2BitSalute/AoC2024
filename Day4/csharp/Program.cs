@@ -23,18 +23,11 @@ int FindInDirection(int r, int c, int dirR, int dirC)
     for(int i = 0; i < word.Length; i++)
     {
         var indexR = r + (i * dirR) + dirR;
-        if (IsInvalidRow(indexR))
-        {
-            return 0;
-        }
-
         var indexC = c + (i * dirC) + dirC;
-        if (IsInvalidCol(indexC))
-        {
-            return 0;
-        }
 
-        if (matrix[indexR][indexC] != word[i])
+        if (IsInvalidRow(indexR) ||
+            IsInvalidCol(indexC) ||
+            matrix[indexR][indexC] != word[i])
         {
             return 0;
         }
@@ -62,18 +55,10 @@ int Find(int r, int c)
 bool FindXChar(int r, int c, int dirR, int dirC, char toFind)
 {
     var indexR = r + dirR;
-    if (IsInvalidRow(indexR))
-    {
-        return false;
-    }
-
     var indexC = c + dirC;
-    if (IsInvalidCol(indexC))
-    {
-        return false;
-    }
-
-    return matrix[indexR][indexC] == toFind;
+    return !(IsInvalidRow(indexR) ||
+             IsInvalidCol(indexC) ||
+             matrix[indexR][indexC] != toFind);
 }
 
 bool FindXHalf(int r, int c, int dirR, int dirC)
