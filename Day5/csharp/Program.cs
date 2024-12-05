@@ -1,16 +1,9 @@
-﻿// See https://aka.ms/new-console-template for more information
-using System.Globalization;
-
-Console.WriteLine("Hello, World!");
-
-// var filename = "../short_input";
-// var filename = "../medium_input";
+﻿// var filename = "../short_input";
 var filename = "../input";
 
 var lines = File.ReadAllLines(filename);
 
 var edges = new Dictionary<string, HashSet<string>>();
-var reverse = new Dictionary<string, HashSet<string>>();
 
 bool CompliesWithRules(string[] u)
 {
@@ -139,18 +132,32 @@ foreach (var line in lines)
     else
     {
         // tests/updates
-        var u = line.Split(',');
+        var update = line.Split(',');
 
         try
         {
-            if (CompliesWithRules(u))
+            // if (CompliesWithRules(u))
+            // {
+            //     sum += GetMiddleValue(u);
+            // }
+            // else
+            // {
+            //     ComplyWithRules(u);
+            //     incorrectSum += GetMiddleValue(u);
+            // }
+
+            var original = new List<string>(update);
+            Array.Sort(update, new Comparison<string>((a, b) =>
+                edges.TryGetValue(a, out HashSet<string>? mustBeAfter) && mustBeAfter.Contains(b) ? -1 : 1
+            ));
+
+            if (original.SequenceEqual(update))
             {
-                sum += GetMiddleValue(u);
+                sum += GetMiddleValue(update);
             }
             else
             {
-                ComplyWithRules(u);
-                incorrectSum += GetMiddleValue(u);
+                incorrectSum += GetMiddleValue(update);
             }
         }
         catch (Exception e)
