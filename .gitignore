@@ -6,6 +6,7 @@
 # Advent of Code input
 input
 short_input
+out.txt
 
 # dotenv files
 .env

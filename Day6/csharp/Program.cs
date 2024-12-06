@@ -19,6 +19,8 @@ var map = lines.Select(line => line.ToArray()).ToArray();
 var numRows = map.Length;
 var numCols = map[0].Length;
 
+(int r, int c, (int R, int C) direction) start = (0, 0, (0, 0));
+
 bool OutOfBounds(int r, int c) => r < 0 || r >= numRows || c < 0 || c >= numCols;
 
 (int R, int C) Turn90Degrees((int R, int C) direction)
@@ -35,23 +37,19 @@ bool OutOfBounds(int r, int c) => r < 0 || r >= numRows || c < 0 || c >= numCols
 
 var seenSolutions = new HashSet<(int r, int c)>();
 
-int SolvePart2(int r, int c, (int R, int C) direction)
+(int r, int c) Increment(int r, int c, (int R, int C) direction) => (r + direction.R, c + direction.C);
+
+bool SolvePart2(int r, int c, (int R, int C) direction)
 {
-    var (initialR, initialC, initialDirection) = (r, c, direction);
+    // var (initialR, initialC, initialDirection) = (r, c, direction);
     // Console.WriteLine($"({r},{c}) ({direction.R}, {direction.C})");
 
-    var pretendObstacle = (r + direction.R, c + direction.C);
-    if (seenSolutions.Contains(pretendObstacle))
-    {
-        return 0;
-    }
-
     // Pretend there is an obstacle
-    direction = Turn90Degrees(direction);
+    // direction = Turn90Degrees(direction);
 
     var seen = new HashSet<(int r, int c, (int R, int C))>
     {
-        (initialR, initialC, initialDirection)
+        // (initialR, initialC, initialDirection)
     };
 
     while(true)
@@ -59,33 +57,26 @@ int SolvePart2(int r, int c, (int R, int C) direction)
         // Console.WriteLine($"({r},{c}) ({direction.R}, {direction.C})");
 
         var point = (r, c, direction);
+        if (seen.Contains(point))
+        {
+            return true;
+        }
 
-        var rNext = r + direction.R;
-        var cNext = c + direction.C;
+        seen.Add(point);
+
+        var (rNext, cNext) = Increment(r, c, direction);
 
         if (OutOfBounds(rNext, cNext))
         {
             // Not a cycle
-            return 0;
+            return false;
         }
 
         if (map[rNext][cNext] == '#')
         {
             // turn 90%
             direction = Turn90Degrees(direction);
-            rNext = r + direction.R;
-            cNext = c + direction.C;
-        }
-        else
-        {
-            if (seen.Contains(point))
-            {
-                // We're back to a starting point
-                seenSolutions.Add(pretendObstacle);
-                return 1;
-            }
-            
-            seen.Add(point);
+            (rNext, cNext) = Increment(r, c, direction);
         }
 
         (r, c) = (rNext, cNext);
@@ -100,8 +91,7 @@ int SolvePart2(int r, int c, (int R, int C) direction)
         map[r][c] = 'X';
     }
 
-    var rNext = r + direction.R;
-    var cNext = c + direction.C;
+    var (rNext, cNext) = Increment(r, c, direction);
 
     if (OutOfBounds(rNext, cNext))
     {
@@ -112,18 +102,83 @@ int SolvePart2(int r, int c, (int R, int C) direction)
     {
         // turn 90%
         direction = Turn90Degrees(direction);
-        rNext = r + direction.R;
-        cNext = c + direction.C;
+        (rNext, cNext) = Increment(r, c, direction);
     }
     else
     {
-        part2Count += SolvePart2(r, c, direction);
+        (int R, int C) pretendObstacle = (r + direction.R, c + direction.C);
+        if (!seenSolutions.Contains(pretendObstacle))
+        {
+            // Pretend there is an obstacle
+            var orig = map[pretendObstacle.R][pretendObstacle.C];
+            map[pretendObstacle.R][pretendObstacle.C] = '#';
+            if (SolvePart2(start.r, start.c, start.direction))
+            {
+                seenSolutions.Add(pretendObstacle);
+            }
+
+            map[pretendObstacle.R][pretendObstacle.C] = orig;
+        }
     }
 
     return Solve(rNext, cNext, direction, part1count, part2Count);
 }
 
-(int Part1, int Part2) Parts1and2()
+int SolvePart1(int r, int c, (int R, int C) direction, bool hypothetical)
+{
+    var count = 0;
+    var seen = new HashSet<(int r, int c, (int R, int C))>();
+
+    while (true)
+    {
+        var point = (r, c, direction);
+        if (seen.Contains(point))
+        {
+            Console.WriteLine("Cycle");
+            return -1;
+        }
+
+        if (map[r][c] != 'X')
+        {
+            count++;
+            map[r][c] = 'X';
+        }
+
+        var (rNext, cNext) = Increment(r, c, direction);
+
+        if (OutOfBounds(rNext, cNext))
+        {
+            return count;
+        }
+
+        if (map[rNext][cNext] == '#')
+        {
+            // turn 90%
+            direction = Turn90Degrees(direction);
+            (rNext, cNext) = Increment(r, c, direction);
+        }
+        else if (hypothetical)
+        {
+            (int R, int C) pretendObstacle = (r + direction.R, c + direction.C);
+            if (!seenSolutions.Contains(pretendObstacle))
+            {
+                // Pretend there is an obstacle
+                var orig = map[pretendObstacle.R][pretendObstacle.C];
+                map[pretendObstacle.R][pretendObstacle.C] = '#';
+                if (SolvePart1(start.Item1, start.Item2, (direction.R, direction.C), true) == -1)
+                {
+                    seenSolutions.Add(pretendObstacle);
+                }
+
+                map[pretendObstacle.R][pretendObstacle.C] = orig;
+            }
+        }
+
+        (r, c) = (rNext, cNext);
+    }
+}
+
+int Parts1and2()
 {
     for (int r = 0; r < numRows; r++)
     {
@@ -132,9 +187,11 @@ int SolvePart2(int r, int c, (int R, int C) direction)
             var direction = GetDirection(map[r][c]);
             if (direction != (0,0))
             {
+                start = (r, c, direction);
                 map[r][c] = '.';
 
-                return Solve(r, c, direction, 0, 0);
+                return Solve(r, c, direction, 0, 0).Part1;
+                // return SolvePart1(r, c, direction, false);
             }
         }
     }
@@ -142,7 +199,7 @@ int SolvePart2(int r, int c, (int R, int C) direction)
     throw new InvalidOperationException("Not supposed to happen");
 }
 
-var (part1, part2) = Parts1and2();
+var part1 = Parts1and2();
 
 Console.WriteLine($"Part 1: {part1}");
 Console.WriteLine($"Part 2: {seenSolutions.Count}");
