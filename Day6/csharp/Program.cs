@@ -134,18 +134,21 @@ int SolvePart1(int r, int c, (int R, int C) direction, bool hypothetical)
         var point = (r, c, direction);
         if (seen.Contains(point))
         {
-            Console.WriteLine("Cycle");
+            Console.WriteLine($"Cycle {hypothetical}");
             return -1;
         }
+        seen.Add(point);
 
-        if (map[r][c] != 'X')
+        if (hypothetical)
         {
-            count++;
-            map[r][c] = 'X';
+            if (map[r][c] != 'X')
+            {
+                count++;
+                map[r][c] = 'X';
+            }
         }
 
         var (rNext, cNext) = Increment(r, c, direction);
-
         if (OutOfBounds(rNext, cNext))
         {
             return count;
@@ -159,13 +162,13 @@ int SolvePart1(int r, int c, (int R, int C) direction, bool hypothetical)
         }
         else if (hypothetical)
         {
-            (int R, int C) pretendObstacle = (r + direction.R, c + direction.C);
+            (int R, int C) pretendObstacle = Increment(r, c, direction);
             if (!seenSolutions.Contains(pretendObstacle))
             {
                 // Pretend there is an obstacle
                 var orig = map[pretendObstacle.R][pretendObstacle.C];
                 map[pretendObstacle.R][pretendObstacle.C] = '#';
-                if (SolvePart1(start.Item1, start.Item2, (direction.R, direction.C), true) == -1)
+                if (SolvePart1(start.r, start.c, start.direction, false) == -1)
                 {
                     seenSolutions.Add(pretendObstacle);
                 }
@@ -190,8 +193,8 @@ int Parts1and2()
                 start = (r, c, direction);
                 map[r][c] = '.';
 
-                return Solve(r, c, direction, 0, 0).Part1;
-                // return SolvePart1(r, c, direction, false);
+                // return Solve(r, c, direction, 0, 0).Part1;
+                return SolvePart1(r, c, direction, true);
             }
         }
     }
