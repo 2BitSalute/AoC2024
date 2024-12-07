@@ -16,13 +16,13 @@ long Find(long target, long result, long[] operands)
     long max = 0;
     foreach(var op in new Op[] { Add, Mul, Con })
     {
-        max = Math.Max(max, FindSolution(target, result, op, operands));
+        max = Math.Max(max, Apply(target, result, op, operands));
     }
 
     return max;
 }
 
-long FindSolution(long target, long result, Op op, long[] operands)
+long Apply(long target, long result, Op op, long[] operands)
 {
     var operand = operands[0];
     result = op(result, operand);
