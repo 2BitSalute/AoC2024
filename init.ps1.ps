@@ -1,0 +1,18 @@
+function CreateDay { param($day)       
+    mkdir $day
+    Push-Location .\$day
+
+    New-Item .\input -Type File
+    New-Item .\short_input -Type File
+
+    mkdir csharp
+    Push-Location .\csharp
+
+    dotnet new console
+
+    Pop-Location # csharp
+    Pop-Location # day
+}
+
+$days = @(9..25) | ForEach-Object { "Day" + $_ }
+$days | ForEach-Object { CreateDay $_ }
