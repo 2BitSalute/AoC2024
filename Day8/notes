@@ -1,0 +1,54 @@
+
+  012
+0 .A.
+1 A..
+2 ...
+
+[1, 0] [0, 1]
+
+1 - 0 = 1
+0 - 1 = -1
+
+distance
+[1, -1]
+
+  012
+0 ...
+1 .A.
+2 ..A
+
+[1, 1] [2, 2]
+
+1 - 2 = -1
+1 - 2 = -1
+
+[-1, -1]
+
+- choose leftmost
+
+if the signs are the same
+- apply distance to leftmost
+- apply the reverse of distance to rightmost
+
+if the signs are different
+- apply distance to leftmost
+
+  012
+0 ...
+1 .AA
+2 ...
+
+[1, 1] [1, 2]
+
+1 - 1 = 0
+1 - 2 = -1
+
+  012
+0 ...
+1 .A.
+2 .A.
+
+[1, 1] [2, 1]
+
+1 - 2 = -1
+1 - 1 = 0

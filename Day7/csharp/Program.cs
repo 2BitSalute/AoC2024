@@ -13,7 +13,7 @@ long Find(long target, long result, long[] operands)
 {
     operands = operands[1..];
 
-    long max = 0;
+    var max = 0L;
     foreach(var op in new Op[] { Add, Mul, Con })
     {
         max = Math.Max(max, Apply(target, result, op, operands));
