@@ -43,12 +43,6 @@ bool PlaceAntinode((int r, int c) antinode, HashSet<(int r, int c)> solution)
 
 void PlaceAntinodesPart1((int r, int c) a, (int r, int c) b)
 {
-    // reorder points so the leftmost or topmost (if columns are the same) is first
-    if (a.c > b.c || (a.c == b.c && a.r > b.r))
-    {
-        (a, b) = (b, a);
-    }
-
     // measure distance between a and b
     (int r, int c) distance = (a.r - b.r, a.c -  b.c);
 
