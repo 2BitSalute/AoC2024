@@ -24,14 +24,11 @@ distance
 
 [-1, -1]
 
-- choose leftmost
+- choose leftmost point
+- if columns are the same, choose higher point
 
-if the signs are the same
 - apply distance to leftmost
 - apply the reverse of distance to rightmost
-
-if the signs are different
-- apply distance to leftmost
 
   012
 0 ...
