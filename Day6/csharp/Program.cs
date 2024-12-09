@@ -154,13 +154,7 @@ int SolvePart1(int r, int c, (int R, int C) direction, bool hypothetical)
             return count;
         }
 
-        if (map[rNext][cNext] == '#')
-        {
-            // turn 90%
-            direction = Turn90Degrees(direction);
-            (rNext, cNext) = Increment(r, c, direction);
-        }
-        else if (hypothetical)
+        if (hypothetical && map[rNext][cNext] != '#')
         {
             (int R, int C) pretendObstacle = Increment(r, c, direction);
             if (!seenSolutions.Contains(pretendObstacle))
@@ -175,6 +169,13 @@ int SolvePart1(int r, int c, (int R, int C) direction, bool hypothetical)
 
                 map[pretendObstacle.R][pretendObstacle.C] = orig;
             }
+        }
+
+        while (map[rNext][cNext] == '#')
+        {
+            // turn 90%
+            direction = Turn90Degrees(direction);
+            (rNext, cNext) = Increment(r, c, direction);
         }
 
         (r, c) = (rNext, cNext);
